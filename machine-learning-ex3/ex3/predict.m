@@ -21,7 +21,17 @@ p = zeros(size(X, 1), 1);
 %       can use max(A, [], 2) to obtain the max for each row.
 %
 
-
+% Add ones to the X data matrix
+X = [ones(m, 1) X];
+size(X)
+size(Theta1)
+layer1 = sigmoid(X*Theta1');
+size(layer1)
+Z1 = [ones(size(layer1,1), 1) layer1];
+size (Z1)
+size(Theta2)
+prob = sigmoid(Z1*Theta2');
+[probas,p] = max(prob,[],2);
 
 
 
