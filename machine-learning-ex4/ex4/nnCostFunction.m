@@ -61,10 +61,29 @@ Theta2_grad = zeros(size(Theta2));
 %               the regularization separately and then add them to Theta1_grad
 %               and Theta2_grad from Part 2.
 %
+OneColX = (zeros(m,1) + 1);
+X = [OneColX X];
+tmp1 = [OneColX X*Theta1'];
+tmp2 = tmp1 * Theta2';
+newy = [];
+for i = 1:m
+    tmpy = zeros(1,num_labels);
+    tmpy(1,y(i))= 1;
+    tmpx = tmp2(i,:)
+    %size tmpx
+    %size tmpy
+    %log(sigmoid(tmpx))
+    sum(log(sigmoid(tmpx)).*(-tmpy))
+    1 - sigmoid(tmpx)
+    log(1 - sigmoid(tmpx))
+    ones(size(tmpy)) - tmpy
+    log(1 - sigmoid(tmpx)).*(ones(size(tmpy)) - tmpy)
+    (sum(log(sigmoid(tmpx)).*(-tmpy)) - sum(log(1 - sigmoid(tmpx)).*(ones(size(tmpy)) - tmpy)))
+    J = J + (sum(log(sigmoid(tmpx)).*(-tmpy)) - sum(log(1 - sigmoid(tmpx)).*(ones(size(tmpy)) - tmpy)));
+end;
+J = J / m
 
-
-
-
+%J = (sum(log(sigmoid(tmp2)).*(-newy)) - sum(log(1 - sigmoid(tmp2)).*(ones(size(newy)) - newy))) / m;
 
 
 
