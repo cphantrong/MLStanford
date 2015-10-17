@@ -2,7 +2,7 @@ function [J grad] = nnCostFunction(nn_params, ...
                                    input_layer_size, ...
                                    hidden_layer_size, ...
                                    num_labels, ...
-                                   X, y, lambda)
+                                   XOne, y, lambda)
 %NNCOSTFUNCTION Implements the neural network cost function for a two layer
 %neural network which performs classification
 %   [J grad] = NNCOSTFUNCTON(nn_params, hidden_layer_size, num_labels, ...
@@ -23,7 +23,7 @@ Theta2 = reshape(nn_params((1 + (hidden_layer_size * (input_layer_size + 1))):en
                  num_labels, (hidden_layer_size + 1));
 
 % Setup some useful variables
-m = size(X, 1);
+m = size(XOne, 1);
          
 % You need to return the following variables correctly 
 J = 0;
@@ -64,8 +64,8 @@ Theta2_grad = zeros(size(Theta2));
 
 
 OneColX = (zeros(m,1) + 1);
-X = [OneColX X];
-tmp1 = [OneColX sigmoid(X*Theta1')];
+XOne = [OneColX XOne];
+tmp1 = [OneColX sigmoid(XOne*Theta1')];
 h_theta = sigmoid(tmp1 * Theta2');
 for (i=1:m)
     y_vect = zeros(1,num_labels);
@@ -76,37 +76,27 @@ for (i=1:m)
     end;
      JK = 0;
      for (k=1:num_labels)
-%         if (y_vect(1,k) == 0)
-%             tmp = log(1 - sigmoid(h_theta(i,k)));
-%         else
-%             tmp = log(sigmoid(h_theta(i,k)));
-%         end;
-%         if ( isinf (tmp))
-%             tmp
-%             dbg_a = y_vect(1,k)
-%             dbg_b = h_theta(i,k)
-%             dbg_c = sigmoid(dbg_b)
-%             dbg_d = 1 - sigmoid(dbg_b)
-%         end;
-%         JK = JK + tmp;
-% %         tmp = + y_vect(1,k)*log(sigmoid(h_theta(i,k))) + (1-y_vect(1,k))*log(1 - sigmoid(h_theta(i,k)))
-% %         if ( isnan ([tmp]))
-% %             dbg_a = y_vect(1,k)
-% %             dbg_b = h_theta(i,k)
-% %             dbg_c = sigmoid(dbg_b)
-% %             dbg_d = 1 - sigmoid(dbg_b)
-% %         end;
         JK = JK + y_vect(1,k)*log(h_theta(i,k)) + (1-y_vect(1,k))*log(1 - h_theta(i,k));
-%        J = J + (sum(log(sigmoid(X * theta)).*(-y)) - sum(log(1 - sigmoid(X * theta)).*(ones(size(y)) - y))) / m;
     end;
-%     if (isnan ([JK]))
-%         h_theta(i,:)
-%         JK
-%     end;
     J = J + JK;
 end;
-J = -J / m;
+J = - J / m;
 
+% Regularization
+reg_term = 0;
+
+for (j=1:size(Theta1,1))
+     for (k=2:size(Theta1,2))
+        reg_term = reg_term + Theta1(j,k)^2;
+    end;
+end;
+
+for (j = 1:size(Theta2,1))
+    for (k = 2:size(Theta2,2))
+        reg_term = reg_term + Theta2(j,k)^2;
+end;
+
+J = J + (reg_term * lambda/(2*m)) ;
 
 
 % -------------------------------------------------------------
