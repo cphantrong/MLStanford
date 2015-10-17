@@ -61,41 +61,51 @@ Theta2_grad = zeros(size(Theta2));
 %               the regularization separately and then add them to Theta1_grad
 %               and Theta2_grad from Part 2.
 %
+
+
 OneColX = (zeros(m,1) + 1);
 X = [OneColX X];
-tmp1 = [OneColX X*Theta1'];
-tmp2 = tmp1 * Theta2';
-newy = [];
-for i = 1:m
-    tmpy = zeros(1,num_labels);
-    tmpy(1,y(i))= 1;
-    tmpx = tmp2(i,:)
-    %size tmpx
-    %size tmpy
-    %log(sigmoid(tmpx))
-    sum(log(sigmoid(tmpx)).*(-tmpy))
-    1 - sigmoid(tmpx)
-    log(1 - sigmoid(tmpx))
-    ones(size(tmpy)) - tmpy
-    log(1 - sigmoid(tmpx)).*(ones(size(tmpy)) - tmpy)
-    (sum(log(sigmoid(tmpx)).*(-tmpy)) - sum(log(1 - sigmoid(tmpx)).*(ones(size(tmpy)) - tmpy)))
-    J = J + (sum(log(sigmoid(tmpx)).*(-tmpy)) - sum(log(1 - sigmoid(tmpx)).*(ones(size(tmpy)) - tmpy)));
+tmp1 = [OneColX sigmoid(X*Theta1')];
+h_theta = sigmoid(tmp1 * Theta2');
+for (i=1:m)
+    y_vect = zeros(1,num_labels);
+    if (y(i) == 0)
+        y_vect(1,10)= 1;
+    else
+        y_vect(1,y(i))= 1;
+    end;
+     JK = 0;
+     for (k=1:num_labels)
+%         if (y_vect(1,k) == 0)
+%             tmp = log(1 - sigmoid(h_theta(i,k)));
+%         else
+%             tmp = log(sigmoid(h_theta(i,k)));
+%         end;
+%         if ( isinf (tmp))
+%             tmp
+%             dbg_a = y_vect(1,k)
+%             dbg_b = h_theta(i,k)
+%             dbg_c = sigmoid(dbg_b)
+%             dbg_d = 1 - sigmoid(dbg_b)
+%         end;
+%         JK = JK + tmp;
+% %         tmp = + y_vect(1,k)*log(sigmoid(h_theta(i,k))) + (1-y_vect(1,k))*log(1 - sigmoid(h_theta(i,k)))
+% %         if ( isnan ([tmp]))
+% %             dbg_a = y_vect(1,k)
+% %             dbg_b = h_theta(i,k)
+% %             dbg_c = sigmoid(dbg_b)
+% %             dbg_d = 1 - sigmoid(dbg_b)
+% %         end;
+        JK = JK + y_vect(1,k)*log(h_theta(i,k)) + (1-y_vect(1,k))*log(1 - h_theta(i,k));
+%        J = J + (sum(log(sigmoid(X * theta)).*(-y)) - sum(log(1 - sigmoid(X * theta)).*(ones(size(y)) - y))) / m;
+    end;
+%     if (isnan ([JK]))
+%         h_theta(i,:)
+%         JK
+%     end;
+    J = J + JK;
 end;
-J = J / m
-
-%J = (sum(log(sigmoid(tmp2)).*(-newy)) - sum(log(1 - sigmoid(tmp2)).*(ones(size(newy)) - newy))) / m;
-
-
-
-
-
-
-
-
-
-
-
-
+J = -J / m;
 
 
 
